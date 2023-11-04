@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 var cors = require("cors");
 const port = process.env.port || 5000;
 
@@ -32,6 +32,7 @@ async function run() {
 
     const brandCollection = client.db("digitalDB").collection("brands");
     const brandDetails = client.db("digitalDB").collection("brandDetails");
+    const productsCollection = client.db("digitalDB").collection("products");
 
     // --01  get brand info name and image
     app.get("/brands", async (req, res) => {
@@ -39,13 +40,33 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    // brand details of products
+    // --02  brand details of products
 
     app.get("/branddetails", async (req, res) => {
       const cursor = brandDetails.find();
       const result = await cursor.toArray();
       res.send(result);
     });
+
+    // --03 find a data by specific id
+
+    app.get("/branddetails/:id",async(req,res)=>{
+      const id=req.params.id;
+      const query={_id: new ObjectId(id)}
+      const result=await  brandDetails.findOne(query);
+      res.send(result)
+    })
+
+
+    // --04 add products
+    app.post("/products",async(req,res)=>{
+      const newProduct=req.body;
+      const result=await productsCollection.insertOne(newProduct);
+      res.send(result)
+
+    })
+
+     
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
