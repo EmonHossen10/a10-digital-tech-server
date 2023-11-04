@@ -31,10 +31,18 @@ async function run() {
     await client.connect();
 
     const brandCollection = client.db("digitalDB").collection("brands");
+    const brandDetails = client.db("digitalDB").collection("brandDetails");
 
-    // --01
+    // --01  get brand info name and image
     app.get("/brands", async (req, res) => {
       const cursor = brandCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    // brand details of products
+
+    app.get("/branddetails", async (req, res) => {
+      const cursor = brandDetails.find();
       const result = await cursor.toArray();
       res.send(result);
     });
