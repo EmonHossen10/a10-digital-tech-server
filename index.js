@@ -32,7 +32,8 @@ async function run() {
 
     const brandCollection = client.db("digitalDB").collection("brands");
     const brandDetails = client.db("digitalDB").collection("brandDetails");
-    const productsCollection = client.db("digitalDB").collection("products");
+    // const productsCollection = client.db("digitalDB").collection("products");
+    const cartCollection = client.db("digitalDB").collection("cartData");
 
     // --01  get brand info name and image
     app.get("/brands", async (req, res) => {
@@ -50,23 +51,44 @@ async function run() {
 
     // --03 find a data by specific id
 
-    app.get("/branddetails/:id",async(req,res)=>{
-      const id=req.params.id;
-      const query={_id: new ObjectId(id)}
-      const result=await  brandDetails.findOne(query);
-      res.send(result)
-    })
-
+    app.get("/branddetails/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await brandDetails.findOne(query);
+      res.send(result);
+    });
 
     // --04 add products
-    app.post("/products",async(req,res)=>{
-      const newProduct=req.body;
-      const result=await productsCollection.insertOne(newProduct);
-      res.send(result)
+    app.post("/products", async (req, res) => {
+      const newProduct = req.body;
+      const result = await brandDetails.insertOne(newProduct);
+      res.send(result);
+    });
 
-    })
+    //--05 cart data post
+    app.post("/addcart", async (req, res) => {
+      const data = req.body;
+      const query = { productId: data.productId };
+      const alreadyExist = await cartCollection.findOne(query);
 
-     
+      if (alreadyExist) {
+        return res
+          .status(400)
+          .json({ error: "Item already exists in the database" });
+      } else {
+        const result = await cartCollection.insertOne(data);
+        console.log(result);
+        res.send(result);
+      }
+    });
+
+    //--06 get path
+
+    app.get("/cart", async (req, res) => {
+      const cursor = cartCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
