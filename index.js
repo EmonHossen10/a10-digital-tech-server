@@ -131,7 +131,7 @@ run().catch(console.dir);
 //****************************************************** */
 
 app.get("/", (req, res) => {
-  res.send("HThis is digital tech server side ");
+  res.send("This is digital tech server side ");
 });
 
 app.listen(port, () => {
