@@ -32,8 +32,8 @@ async function run() {
 
     const brandCollection = client.db("digitalDB").collection("brands");
     const brandDetails = client.db("digitalDB").collection("brandDetails");
-
     const cartCollection = client.db("digitalDB").collection("cartData");
+    const customerCollection = client.db("digitalDB").collection("customers");
 
     // --01  get brand info name and image
     app.get("/brands", async (req, res) => {
@@ -90,7 +90,7 @@ async function run() {
       res.send(result);
     });
 
-    // update product
+    // --07 update product
 
     app.put("/branddetails/:id", async (req, res) => {
       const id = req.params.id;
@@ -106,7 +106,14 @@ async function run() {
         },
       };
       const result = await brandDetails.updateOne(filter, updatedUser, options);
-      res.send(result)
+      res.send(result);
+    });
+
+    //--08 customers review
+    app.get("/customers", async (req, res) => {
+      const cursor = customerCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
