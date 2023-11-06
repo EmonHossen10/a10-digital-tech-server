@@ -90,6 +90,13 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/cart/:id", async(req,res)=>{
+      const id=req.params.id;
+      const query={_id:new ObjectId(id)}
+      const result=await cartCollection.deleteOne(query)
+      res.send(result)
+    })
+
     // --07 update product
 
     app.put("/branddetails/:id", async (req, res) => {
