@@ -28,7 +28,6 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-  
 
     const brandCollection = client.db("digitalDB").collection("brands");
     const brandDetails = client.db("digitalDB").collection("brandDetails");
@@ -90,12 +89,12 @@ async function run() {
       res.send(result);
     });
 
-    app.delete("/cart/:id", async(req,res)=>{
-      const id=req.params.id;
-      const query={_id:new ObjectId(id)}
-      const result=await cartCollection.deleteOne(query)
-      res.send(result)
-    })
+    app.delete("/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
+      res.send(result);
+    });
 
     // --07 update product
 
